@@ -9,6 +9,11 @@ var gagSound;
 var cursorOffset = 0;
 
 function startGame() {
+    // Make it so that players can not click on start more than once.
+    var startButton = window.document.getElementById('StartButton');
+    startButton.setAttribute('disabled', true);
+
+    // Set up sound and images.
     myBackground = new component(750, 470, "prehistbackground.jpg", 0, 0, "image");
     myGamePiece = new component(30, 30, "trex.png", 10, 120, "image");
     myScore = new component("30px", "Consolas", "black", 510, 40, "text");
@@ -16,8 +21,6 @@ function startGame() {
     gagSound = new sound("dinogag.mp3");
     myGameArea.start();
 }
-
-
 
 var myGameArea = {
     canvas: document.createElement("canvas"),
@@ -43,13 +46,13 @@ var myGameArea = {
 }
 
 function everyinterval(n) {
-    if ((myGameArea.frameNo / n) % 1 == 0) { return true; }
+    if ((myGameArea.frameNo / n) % 1 === 0) { return true; }
     return false;
 }
 
 function component(width, height, color, x, y, type) {
     this.type = type;
-    if (type == "image" || type == "background") {
+    if (type === "image" || type === "background") {
         this.image = new Image();
         this.image.src = color;
     }
@@ -65,13 +68,13 @@ function component(width, height, color, x, y, type) {
     this.update = function() {
         ctx = myGameArea.context;
 
-        if (this.type == "text") {
+        if (this.type === "text") {
             ctx.font = this.width + " " + this.height;
             ctx.fillStyle = color;
             ctx.fillText(this.text, this.x, this.y);
-        } else if (type == "image") {
+        } else if (type === "image") {
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-            if (type == "background") {
+            if (type === "background") {
                 ctx.drawImage(this.image, this.x + this.width, this.y, this.width, this.height);
 
             }
@@ -146,9 +149,9 @@ function updateGameArea() {
     myGameArea.clear();
     myBackground.update();
     myGameArea.frameNo += 1;
-    if (myGameArea.frameNo == 1 || everyinterval(150)) {
+    if (myGameArea.frameNo === 1 || everyinterval(150)) {
         x = myGameArea.canvas.width;
-        height = 10
+        height = 10;
         minGap = 20;
         maxGap = 300;
         rng1 = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);

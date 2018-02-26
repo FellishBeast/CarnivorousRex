@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="scripts/main.js"></script>
 <html>
 <head>
@@ -10,22 +9,13 @@
         background-color: #f1f1f1;
     }
     </style>
-    <div id="SplashScreen">
-    <h1>Carnivorous Rex</h1>
-    <input id="StartButton" type="button" value="Start"/>
-</div>
-<!-- <canvas id="GameCanvas" style="display: none;">Game Stuff</canvas>
- --><script>
-    $("#StartButton").click(function() {
-        $("#SplashScreen").hide();
-        $("#GameCanvas").show();
-        startGame();
-    });
-</script>
-
 </head>
 
 <body>
+    <div id="SplashScreen">
+        <h1>Carnivorous Rex</h1>
+        <input id="StartButton" type="button" value="Start" onclick="startGame()"/>
+    </div>
     <p>ehh? koming togehter??</p>
 </body>
 
