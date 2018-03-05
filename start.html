@@ -2,6 +2,7 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script src="scripts/main.js"></script>
 <html>
+
 <head>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
@@ -9,24 +10,45 @@
         border: 1px solid #d3d3d3;
         background-color: #f1f1f1;
     }
+
+    #SplashScreen {
+        background-image: url("menubackground.jpg");
+        height: 90vh;
+        border: 12px solid black;
+        text-align: center;
+        font: fantasy;
+        background-size: cover;
+    }
+
+    #StartButton {
+        font: fantasy;
+        background-color: green;
+        color: white;
+    }
+
+    #title {
+        /*        font-size: 20px;
+            font*/
+    }
     </style>
     <div id="SplashScreen">
-    <h1>Carnivorous Rex</h1>
-    <input id="StartButton" type="button" value="Start"/>
-</div>
-<!-- <canvas id="GameCanvas" style="display: none;">Game Stuff</canvas>
- --><script>
+        <h1 id="title">Carnivorous Rex</h1>
+        <h3>Featuring Sir Loin</h3>
+        <input id="StartButton" type="button" value="Start" />
+    </div>
+    <!-- <canvas id="GameCanvas" style="display: none;">Game Stuff</canvas>
+ -->
+    <script>
     $("#StartButton").click(function() {
         $("#SplashScreen").hide();
         $("#GameCanvas").show();
         startGame();
     });
-</script>
-
+    </script>
 </head>
 
 <body>
-    <p>ehh? koming togehter??</p>
+    <p>Control the rex with the mouse cursor.<br>Eat MEAT to GROW and avoid VEGETALS or ELSE!</p>
 </body>
 
 </html>

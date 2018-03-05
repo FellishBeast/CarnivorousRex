@@ -1,5 +1,7 @@
 var myGamePiece;
 var myBackground;
+var canvasHeight = 470;
+var canvasWidth = 750;
 var myNoms = [];
 var myYucks = [];
 var myScore;
@@ -7,17 +9,33 @@ var myScoreTotal = 0;
 var chompSound;
 var gagSound;
 var cursorOffset = 0;
+var stage = 1;
+var background = "prehistbackground.jpg";
+var objectXSpeed;
+var levelUpScore;
+var interval;
 
 function startGame() {
-    myBackground = new component(750, 470, "prehistbackground.jpg", 0, 0, "image");
+    myBackground = new component(canvasWidth, canvasHeight, background, 0, 0, "image");
     myGamePiece = new component(30, 30, "trex.png", 10, 120, "image");
     myScore = new component("30px", "Consolas", "black", 510, 40, "text");
     chompSound = new sound("dinochomp.mp3");
     gagSound = new sound("dinogag.mp3");
+    objectXSpeed = -2;
+    myScoreTotal = 0;
+    levelupScore = 100;
+    interval = 150;
     myGameArea.start();
 }
 
-
+function updateGame() {
+    myBackground = new component(canvasWidth, canvasHeight, background, 0, 0, "image");
+    myGamePiece = new component(30, 30, "trex.png", myGamePiece.x, myGamePiece.y, "image");
+    myScore = new component("30px", "Consolas", "black", 510, 40, "text");
+    // chompSound = new sound("dinochomp.mp3");
+    // gagSound = new sound("dinogag.mp3");
+    interval += 150;
+}
 
 var myGameArea = {
     canvas: document.createElement("canvas"),
@@ -33,6 +51,10 @@ var myGameArea = {
             myGameArea.x = e.pageX;
             myGameArea.y = e.pageY;
         })
+    },
+    expand: function() {
+        this.canvas.width = 1000;
+        this.canvas.height = 700;
     },
     clear: function() {
         this.context.clearRect(0, 0, this.canvas.width, this.canvas.height);
@@ -57,11 +79,8 @@ function component(width, height, color, x, y, type) {
     this.height = height;
     this.speedX = 0;
     this.speedY = 0;
-    //this.gravity = 0.1;
-    //this.gravitySpeed = 0;
     this.x = x;
     this.y = y;
-    //this.bounce = 0.6;
     this.update = function() {
         ctx = myGameArea.context;
 
@@ -87,11 +106,11 @@ function component(width, height, color, x, y, type) {
         this.x += this.speedX;
         this.y += this.speedY + this.gravitySpeed;
         this.hitBottom();
-        // if (this.type == "background") {
-        //     if (this.x == -(this.width)) {
-        //         this.x = 0;
-        //     }
-        // }
+        if (this.type == "background") {
+            if (this.x == -(this.width)) {
+                this.x = 0;
+            }
+        }
     }
 
     this.hitBottom = function() {
@@ -126,6 +145,25 @@ function component(width, height, color, x, y, type) {
 //     myGamePiece.gravity = n;
 // }
 
+function nextStage() {
+    background = "loopingjungle.jpg";
+    stage += 1;
+    if (stage == 4) {
+        expandCanvas();
+    }
+    //myScore = 0;
+    //myScoreTotal = 0;
+    levelupScore += 100;
+    objectXSpeed -= 1;
+    updateGame();
+}
+
+function expandCanvas() {
+    canvasHeight = 700;
+    canvasWidth = 1000;
+    myGameArea.expand();
+}
+
 function updateGameArea() {
     var x, height, gap, minHeight, maxHeight, minGap, maxGap;
 
@@ -144,24 +182,26 @@ function updateGameArea() {
         }
     }
     myGameArea.clear();
+    // myBackground.speedX = -1;
+    // myBackground.newPos();
     myBackground.update();
     myGameArea.frameNo += 1;
     if (myGameArea.frameNo == 1 || everyinterval(150)) {
         x = myGameArea.canvas.width;
-        height = 10
-        minGap = 20;
-        maxGap = 300;
+        height = 10;
+        minGap = 10;
+        maxGap = canvasHeight - 50;
         rng1 = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
         rng2 = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
         myNoms.push(new component(50, 50, "sirloin.png", x, rng1, "image"));
-        myYucks.push(new component(50, 50, "veggie.png", x + 160, rng2, "image"));
+        myYucks.push(new component(50, 50, "veggie.png", x + interval, rng2, "image"));
     }
     for (i = 0; i < myNoms.length; i += 1) {
-        myNoms[i].x += -2;
+        myNoms[i].x += objectXSpeed;
         myNoms[i].update();
     }
     for (i = 0; i < myYucks.length; i += 1) {
-        myYucks[i].x += -2;
+        myYucks[i].x += objectXSpeed;
         myYucks[i].update();
     }
 
@@ -173,9 +213,11 @@ function updateGameArea() {
         myGamePiece.y += -2.5 + yDistance * .1;
     }
     myScore.text = "SCORE: " + myScoreTotal;
-    //myBackground.speedX = -1;
-    //myBackground.newPos();
+
     myScore.update();
+    if (myScoreTotal >= levelupScore) {
+        nextStage();
+    }
     myGamePiece.width = 30 + myScoreTotal;
     myGamePiece.height = 30 + myScoreTotal;
     cursorOffset = -myScoreTotal / 2;
