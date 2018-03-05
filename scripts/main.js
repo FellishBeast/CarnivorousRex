@@ -186,7 +186,7 @@ function updateGameArea() {
     // myBackground.newPos();
     myBackground.update();
     myGameArea.frameNo += 1;
-    if (myGameArea.frameNo == 1 || everyinterval(75)) {
+    if (myGameArea.frameNo == 1 || everyinterval(150)) {
         x = myGameArea.canvas.width;
         height = 10;
         minGap = 10;
