@@ -34,7 +34,7 @@ function updateGame() {
     myScore = new component("30px", "Consolas", "black", 510, 40, "text");
     // chompSound = new sound("dinochomp.mp3");
     // gagSound = new sound("dinogag.mp3");
-    interval += 150;
+    interval += 30;
 }
 
 var myGameArea = {
@@ -65,7 +65,9 @@ var myGameArea = {
 }
 
 function everyinterval(n) {
-    if ((myGameArea.frameNo / n) % 1 == 0) { return true; }
+    if ((myGameArea.frameNo / n) % 1 == 0) {
+        return true;
+    }
     return false;
 }
 
@@ -92,10 +94,8 @@ function component(width, height, color, x, y, type) {
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
             if (type == "background") {
                 ctx.drawImage(this.image, this.x + this.width, this.y, this.width, this.height);
-
             }
         } else {
-
             ctx.fillStyle = color;
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
@@ -186,7 +186,7 @@ function updateGameArea() {
     // myBackground.newPos();
     myBackground.update();
     myGameArea.frameNo += 1;
-    if (myGameArea.frameNo == 1 || everyinterval(150)) {
+    if (myGameArea.frameNo == 1 || everyinterval(75)) {
         x = myGameArea.canvas.width;
         height = 10;
         minGap = 10;
