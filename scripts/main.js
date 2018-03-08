@@ -50,7 +50,9 @@ var myGameArea = {
         window.addEventListener('mousemove', function(e) {
             myGameArea.x = e.pageX;
             myGameArea.y = e.pageY;
-        })
+        })       
+        document.getElementById("canvas").style.cursor = "none";
+
     },
     expand: function() {
         this.canvas.width = 1000;
