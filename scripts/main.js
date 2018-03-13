@@ -16,11 +16,11 @@ var levelUpScore;
 var interval;
 
 function startGame() {
-    myBackground = new component(canvasWidth, canvasHeight, background, 0, 0, "image");
-    myGamePiece = new component(30, 30, "trex.png", 10, 120, "image");
-    myScore = new component("30px", "Consolas", "black", 510, 40, "text");
-    chompSound = new sound("dinochomp.mp3");
-    gagSound = new sound("dinogag.mp3");
+    myBackground = new Component(canvasWidth, canvasHeight, background, 0, 0, "image");
+    myGamePiece = new Component(30, 30, "trex.png", 10, 120, "image");
+    myScore = new Component("30px", "Consolas", "black", 510, 40, "text");
+    chompSound = new Sound("dinochomp.mp3");
+    gagSound = new Sound("dinogag.mp3");
     objectXSpeed = -2;
     myScoreTotal = 0;
     levelupScore = 100;
@@ -29,9 +29,9 @@ function startGame() {
 }
 
 function updateGame() {
-    myBackground = new component(canvasWidth, canvasHeight, background, 0, 0, "image");
-    myGamePiece = new component(30, 30, "trex.png", myGamePiece.x, myGamePiece.y, "image");
-    myScore = new component("30px", "Consolas", "black", 510, 40, "text");
+    myBackground = new Component(canvasWidth, canvasHeight, background, 0, 0, "image");
+    myGamePiece = new Component(30, 30, "trex.png", myGamePiece.x, myGamePiece.y, "image");
+    myScore = new Component("30px", "Consolas", "white", 510, 40, "text");
     // chompSound = new sound("dinochomp.mp3");
     // gagSound = new sound("dinogag.mp3");
     interval += 30;
@@ -50,7 +50,7 @@ var myGameArea = {
         window.addEventListener('mousemove', function(e) {
             myGameArea.x = e.pageX;
             myGameArea.y = e.pageY;
-        })       
+        });
         document.getElementById("canvas").style.cursor = "none";
 
     },
@@ -64,18 +64,15 @@ var myGameArea = {
     stop: function() {
         clearInterval(this.interval);
     }
-}
+};
 
 function everyinterval(n) {
-    if ((myGameArea.frameNo / n) % 1 == 0) {
-        return true;
-    }
-    return false;
+    return ((myGameArea.frameNo / n) % 1 === 0);
 }
 
-function component(width, height, color, x, y, type) {
+function Component(width, height, color, x, y, type) {
     this.type = type;
-    if (type == "image" || type == "background") {
+    if (type === "image" || type === "background") {
         this.image = new Image();
         this.image.src = color;
     }
@@ -88,32 +85,32 @@ function component(width, height, color, x, y, type) {
     this.update = function() {
         ctx = myGameArea.context;
 
-        if (this.type == "text") {
+        if (this.type === "text") {
             ctx.font = this.width + " " + this.height;
             ctx.fillStyle = color;
             ctx.fillText(this.text, this.x, this.y);
-        } else if (type == "image") {
+        } else if (type === "image") {
             ctx.drawImage(this.image, this.x, this.y, this.width, this.height);
-            if (type == "background") {
+            if (type === "background") {
                 ctx.drawImage(this.image, this.x + this.width, this.y, this.width, this.height);
             }
         } else {
             ctx.fillStyle = color;
             ctx.fillRect(this.x, this.y, this.width, this.height);
         }
-    }
+    };
 
     this.newPos = function() {
         this.gravitySpeed += this.gravity;
         this.x += this.speedX;
         this.y += this.speedY + this.gravitySpeed;
         this.hitBottom();
-        if (this.type == "background") {
-            if (this.x == -(this.width)) {
+        if (this.type === "background") {
+            if (this.x === -(this.width)) {
                 this.x = 0;
             }
         }
-    }
+    };
 
     this.hitBottom = function() {
         var rockbottom = myGameArea.canvas.height - this.height;
@@ -121,7 +118,7 @@ function component(width, height, color, x, y, type) {
             this.y = rockbottom;
             this.gravitySpeed = -(this.gravitySpeed * this.bounce);
         }
-    }
+    };
 
     this.crashWith = function(otherobj) {
         var myleft = this.x;
@@ -150,7 +147,7 @@ function component(width, height, color, x, y, type) {
 function nextStage() {
     background = "loopingjungle.jpg";
     stage += 1;
-    if (stage == 4) {
+    if (stage === 4) {
         expandCanvas();
     }
     //myScore = 0;
@@ -188,15 +185,15 @@ function updateGameArea() {
     // myBackground.newPos();
     myBackground.update();
     myGameArea.frameNo += 1;
-    if (myGameArea.frameNo == 1 || everyinterval(150)) {
+    if (myGameArea.frameNo === 1 || everyinterval(150)) {
         x = myGameArea.canvas.width;
         height = 10;
         minGap = 10;
         maxGap = canvasHeight - 50;
         rng1 = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
         rng2 = Math.floor(Math.random() * (maxGap - minGap + 1) + minGap);
-        myNoms.push(new component(50, 50, "sirloin.png", x, rng1, "image"));
-        myYucks.push(new component(50, 50, "veggie.png", x + interval, rng2, "image"));
+        myNoms.push(new Component(50, 50, "sirloin.png", x, rng1, "image"));
+        myYucks.push(new Component(50, 50, "veggie.png", x + interval, rng2, "image"));
     }
     for (i = 0; i < myNoms.length; i += 1) {
         myNoms[i].x += objectXSpeed;
@@ -227,7 +224,7 @@ function updateGameArea() {
     myGamePiece.update();
 }
 
-function sound(src) {
+function Sound(src) {
     this.sound = document.createElement("audio");
     this.sound.src = src;
     this.sound.setAttribute("preload", "auto");
@@ -237,7 +234,7 @@ function sound(src) {
     this.play = function() {
         this.sound.currentTime = 0;
         this.sound.play();
-    }
+    };
     this.stop = function() {
         this.sound.pause();
     }
