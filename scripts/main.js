@@ -4,6 +4,7 @@ var canvasHeight = 470;
 var canvasWidth = 750;
 var myNoms = [];
 var myYucks = [];
+var myFireballs = [];
 var myScore;
 var myScoreTotal = 0;
 var chompSound;
@@ -14,6 +15,7 @@ var background = "prehistbackground.jpg";
 var objectXSpeed;
 var levelUpScore;
 var interval;
+var endgame = false;
 
 function startGame() {
     myBackground = new Component(canvasWidth, canvasHeight, background, 0, 0, "image");
@@ -22,7 +24,7 @@ function startGame() {
     chompSound = new Sound("dinochomp.mp3");
     gagSound = new Sound("dinogag.mp3");
     objectXSpeed = -2;
-    myScoreTotal = 0;
+    myScoreTotal = 290;
     levelupScore = 100;
     interval = 150;
     myGameArea.start();
@@ -51,7 +53,6 @@ var myGameArea = {
             myGameArea.x = e.pageX;
             myGameArea.y = e.pageY;
         });
-        document.getElementById("canvas").style.cursor = "none";
 
     },
     expand: function() {
@@ -134,7 +135,7 @@ function Component(width, height, color, x, y, type) {
             crash = false;
         }
         return crash;
-    }
+    };
 }
 
 // function accelerate(n) {
@@ -145,10 +146,17 @@ function Component(width, height, color, x, y, type) {
 // }
 
 function nextStage() {
-    background = "loopingjungle.jpg";
+    if (stage === 2) {
+        background = "loopingjungle.jpg";
+    }
     stage += 1;
+    if (stage === 3) {
+        background = "africanjungle.jpg";
+    }
     if (stage === 4) {
         expandCanvas();
+        background = "volcano.gif";
+        endgame = true;
     }
     //myScore = 0;
     //myScoreTotal = 0;
@@ -180,6 +188,13 @@ function updateGameArea() {
             gagSound.play();
         }
     }
+    for (i = 0; i < myFireballs.length; i += 1) {
+        if (myGamePiece.crashWith(myFireballs[i])) {
+            myFireballs.splice(i, 1);
+            myScoreTotal -= 30;
+            gagSound.play();
+        }
+    }
     myGameArea.clear();
     // myBackground.speedX = -1;
     // myBackground.newPos();
@@ -202,6 +217,18 @@ function updateGameArea() {
     for (i = 0; i < myYucks.length; i += 1) {
         myYucks[i].x += objectXSpeed;
         myYucks[i].update();
+    }
+    if (endgame == true && everyinterval(160)) {
+        rng = Math.floor(Math.random() * Math.floor(1200));
+        rngy = Math.floor(Math.random() * Math.floor(5));
+        myFireballs.push(new Component(100, 100, "fireball2.png", rng, rngy, "image"));
+
+    }
+
+    for (i = 0; i < myFireballs.length; i++) {
+        myFireballs[i].y += 8;
+        myFireballs[i].x += -1.5;
+        myFireballs[i].update();
     }
 
     var xDistance = myGameArea.x - myGamePiece.x + cursorOffset;
