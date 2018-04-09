@@ -14,6 +14,7 @@ var stage = 1;
 var background = "prehistbackground.jpg";
 var objectXSpeed;
 var levelUpScore;
+var fireballRate = 160;
 var interval;
 var endgame = false;
 
@@ -24,7 +25,7 @@ function startGame() {
     chompSound = new Sound("dinochomp.mp3");
     gagSound = new Sound("dinogag.mp3");
     objectXSpeed = -2;
-    myScoreTotal = 290;
+    myScoreTotal = 0;
     levelupScore = 100;
     interval = 150;
     myGameArea.start();
@@ -34,8 +35,6 @@ function updateGame() {
     myBackground = new Component(canvasWidth, canvasHeight, background, 0, 0, "image");
     myGamePiece = new Component(30, 30, "trex.png", myGamePiece.x, myGamePiece.y, "image");
     myScore = new Component("30px", "Consolas", "white", 510, 40, "text");
-    // chompSound = new sound("dinochomp.mp3");
-    // gagSound = new sound("dinogag.mp3");
     interval += 30;
 }
 
@@ -171,8 +170,14 @@ function expandCanvas() {
     myGameArea.expand();
 }
 
+function exitGame() {
+    
+}
+
 function updateGameArea() {
     var x, height, gap, minHeight, maxHeight, minGap, maxGap;
+
+    window.addEventListener("keypress", exitGame());
 
     for (i = 0; i < myNoms.length; i += 1) {
         if (myGamePiece.crashWith(myNoms[i])) {
@@ -191,7 +196,7 @@ function updateGameArea() {
     for (i = 0; i < myFireballs.length; i += 1) {
         if (myGamePiece.crashWith(myFireballs[i])) {
             myFireballs.splice(i, 1);
-            myScoreTotal -= 30;
+            myScoreTotal -= 20;
             gagSound.play();
         }
     }
@@ -227,7 +232,7 @@ function updateGameArea() {
 
     for (i = 0; i < myFireballs.length; i++) {
         myFireballs[i].y += 8;
-        myFireballs[i].x += -1.5;
+        myFireballs[i].x += -1;
         myFireballs[i].update();
     }
 
@@ -243,6 +248,9 @@ function updateGameArea() {
     myScore.update();
     if (myScoreTotal >= levelupScore) {
         nextStage();
+        if (endgame == true) {
+            fireballRate += 20;
+        }
     }
     myGamePiece.width = 30 + myScoreTotal;
     myGamePiece.height = 30 + myScoreTotal;
