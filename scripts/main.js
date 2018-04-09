@@ -4,6 +4,7 @@ var canvasHeight = 470;
 var canvasWidth = 750;
 var myNoms = [];
 var myYucks = [];
+var myFireballs = [];
 var myScore;
 var myScoreTotal = 0;
 var chompSound;
@@ -13,7 +14,9 @@ var stage = 1;
 var background = "prehistbackground.jpg";
 var objectXSpeed;
 var levelUpScore;
+var fireballRate = 160;
 var interval;
+var endgame = false;
 
 function startGame() {
     myBackground = new Component(canvasWidth, canvasHeight, background, 0, 0, "image");
@@ -32,8 +35,6 @@ function updateGame() {
     myBackground = new Component(canvasWidth, canvasHeight, background, 0, 0, "image");
     myGamePiece = new Component(30, 30, "trex.png", myGamePiece.x, myGamePiece.y, "image");
     myScore = new Component("30px", "Consolas", "white", 510, 40, "text");
-    // chompSound = new sound("dinochomp.mp3");
-    // gagSound = new sound("dinogag.mp3");
     interval += 30;
 }
 
@@ -51,7 +52,6 @@ var myGameArea = {
             myGameArea.x = e.pageX;
             myGameArea.y = e.pageY;
         });
-        document.getElementById("canvas").style.cursor = "none";
 
     },
     expand: function() {
@@ -134,7 +134,7 @@ function Component(width, height, color, x, y, type) {
             crash = false;
         }
         return crash;
-    }
+    };
 }
 
 // function accelerate(n) {
@@ -145,10 +145,17 @@ function Component(width, height, color, x, y, type) {
 // }
 
 function nextStage() {
-    background = "loopingjungle.jpg";
+    if (stage === 2) {
+        background = "loopingjungle.jpg";
+    }
     stage += 1;
+    if (stage === 3) {
+        background = "africanjungle.jpg";
+    }
     if (stage === 4) {
         expandCanvas();
+        background = "volcano.gif";
+        endgame = true;
     }
     //myScore = 0;
     //myScoreTotal = 0;
@@ -163,8 +170,14 @@ function expandCanvas() {
     myGameArea.expand();
 }
 
+function exitGame() {
+    
+}
+
 function updateGameArea() {
     var x, height, gap, minHeight, maxHeight, minGap, maxGap;
+
+    window.addEventListener("keypress", exitGame());
 
     for (i = 0; i < myNoms.length; i += 1) {
         if (myGamePiece.crashWith(myNoms[i])) {
@@ -177,6 +190,13 @@ function updateGameArea() {
         if (myGamePiece.crashWith(myYucks[i])) {
             myYucks.splice(i, 1);
             myScoreTotal -= 10;
+            gagSound.play();
+        }
+    }
+    for (i = 0; i < myFireballs.length; i += 1) {
+        if (myGamePiece.crashWith(myFireballs[i])) {
+            myFireballs.splice(i, 1);
+            myScoreTotal -= 20;
             gagSound.play();
         }
     }
@@ -203,6 +223,18 @@ function updateGameArea() {
         myYucks[i].x += objectXSpeed;
         myYucks[i].update();
     }
+    if (endgame == true && everyinterval(160)) {
+        rng = Math.floor(Math.random() * Math.floor(1200));
+        rngy = Math.floor(Math.random() * Math.floor(5));
+        myFireballs.push(new Component(100, 100, "fireball2.png", rng, rngy, "image"));
+
+    }
+
+    for (i = 0; i < myFireballs.length; i++) {
+        myFireballs[i].y += 8;
+        myFireballs[i].x += -1;
+        myFireballs[i].update();
+    }
 
     var xDistance = myGameArea.x - myGamePiece.x + cursorOffset;
     var yDistance = myGameArea.y - myGamePiece.y + cursorOffset;
@@ -216,6 +248,9 @@ function updateGameArea() {
     myScore.update();
     if (myScoreTotal >= levelupScore) {
         nextStage();
+        if (endgame == true) {
+            fireballRate += 20;
+        }
     }
     myGamePiece.width = 30 + myScoreTotal;
     myGamePiece.height = 30 + myScoreTotal;
